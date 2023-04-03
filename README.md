@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>fluent_ui</h1>
+  <h1>fluent_ui that works with the flutter master channel</h1>
   <div>
     <a title="pub.dev" href="https://pub.dartlang.org/packages/fluent_ui" >
       <img src="https://img.shields.io/pub/v/fluent_ui.svg?style=flat-square&include_prereleases&color=dc143c" />
