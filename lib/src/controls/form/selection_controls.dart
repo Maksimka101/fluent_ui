@@ -434,7 +434,7 @@ class _FluentTextSelectionToolbarButton extends StatelessWidget {
     required this.tooltip,
   }) : super(key: key);
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String text;
   final IconData? icon;
   final String shortcut;
