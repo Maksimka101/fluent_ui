@@ -16,7 +16,6 @@ void main() {
         builder: (context, child) {
           final ext = FluentTheme.of(context).extension<MyColors>();
 
-          expect(ext, isNotNull);
           expect(ext!.success, Colors.green);
           expect(ext.failure, Colors.red);
 

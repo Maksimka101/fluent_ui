@@ -14,8 +14,6 @@ void main() {
             selected: DateTime(1),
           ),
         ));
-
-        expect(tester.any(find.text('Janeiro')), isNotNull);
       },
     );
 
@@ -28,8 +26,6 @@ void main() {
             selected: DateTime(1),
           ),
         ));
-
-        expect(tester.any(find.text('Janeiro')), isNotNull);
       },
     );
   });

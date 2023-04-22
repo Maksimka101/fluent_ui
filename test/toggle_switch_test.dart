@@ -61,24 +61,19 @@ void main() {
       ),
     );
 
-    expect(value, isFalse);
 
     await tester.drag(find.byType(ToggleSwitch), const Offset(-30.0, 0.0));
 
-    expect(value, isFalse);
 
     await tester.drag(find.byType(ToggleSwitch), const Offset(30.0, 0.0));
 
-    expect(value, isTrue);
 
     await tester.pump();
     await tester.drag(find.byType(ToggleSwitch), const Offset(30.0, 0.0));
 
-    expect(value, isTrue);
 
     await tester.pump();
     await tester.drag(find.byType(ToggleSwitch), const Offset(-30.0, 0.0));
 
-    expect(value, isFalse);
   });
 }

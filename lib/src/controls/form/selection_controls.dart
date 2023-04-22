@@ -5,6 +5,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/foundation.dart';
 
 // The minimum padding from all edges of the selection toolbar to all edges of
 // the screen.
@@ -67,8 +68,7 @@ class FluentTextSelectionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final paddingAbove =
-        MediaQuery.of(context).padding.top + _kToolbarScreenPadding;
+    final paddingAbove = MediaQuery.of(context).padding.top + _kToolbarScreenPadding;
     final localAdjustment = Offset(_kToolbarScreenPadding, paddingAbove);
 
     return Padding(
@@ -117,21 +117,17 @@ class _FluentTextSelectionControls extends TextSelectionControls {
     Offset selectionMidpoint,
     List<TextSelectionPoint> endpoints,
     TextSelectionDelegate delegate,
-    ClipboardStatusNotifier? clipboardStatus,
+    ValueListenable<ClipboardStatus>? clipboardStatus,
     Offset? lastSecondaryTapDownPosition,
   ) {
     return _FluentTextSelectionControlsToolbar(
       clipboardStatus: clipboardStatus,
       endpoints: endpoints,
       globalEditableRegion: globalEditableRegion,
-      handleCut:
-          canCut(delegate) ? () => handleCut(delegate, clipboardStatus) : null,
-      handleCopy: canCopy(delegate)
-          ? () => handleCopy(delegate, clipboardStatus)
-          : null,
+      handleCut: canCut(delegate) ? () => handleCut(delegate) : null,
+      handleCopy: canCopy(delegate) ? () => handleCopy(delegate) : null,
       handlePaste: canPaste(delegate) ? () => handlePaste(delegate) : null,
-      handleSelectAll:
-          canSelectAll(delegate) ? () => handleSelectAll(delegate) : null,
+      handleSelectAll: canSelectAll(delegate) ? () => handleSelectAll(delegate) : null,
       selectionMidpoint: selectionMidpoint,
       lastSecondaryTapDownPosition: lastSecondaryTapDownPosition,
       textLineHeight: textLineHeight,
@@ -169,14 +165,12 @@ class _FluentTextSelectionControls extends TextSelectionControls {
     final value = delegate.textEditingValue;
     return delegate.selectAllEnabled &&
         value.text.isNotEmpty &&
-        !(value.selection.start == 0 &&
-            value.selection.end == value.text.length);
+        !(value.selection.start == 0 && value.selection.end == value.text.length);
   }
 }
 
 // /// Text selection controls that loosely follows Fluent design conventions.
-final TextSelectionControls fluentTextSelectionControls =
-    _FluentTextSelectionControls();
+final TextSelectionControls fluentTextSelectionControls = _FluentTextSelectionControls();
 
 // Generates the child that's passed into FluentTextSelectionToolbar.
 class _FluentTextSelectionControlsToolbar extends StatefulWidget {
@@ -194,7 +188,7 @@ class _FluentTextSelectionControlsToolbar extends StatefulWidget {
     required this.lastSecondaryTapDownPosition,
   }) : super(key: key);
 
-  final ClipboardStatusNotifier? clipboardStatus;
+  final ValueListenable<ClipboardStatus>? clipboardStatus;
   final List<TextSelectionPoint> endpoints;
   final Rect globalEditableRegion;
   final VoidCallback? handleCopy;
@@ -206,13 +200,11 @@ class _FluentTextSelectionControlsToolbar extends StatefulWidget {
   final double textLineHeight;
 
   @override
-  State<_FluentTextSelectionControlsToolbar> createState() =>
-      _FluentTextSelectionControlsToolbarState();
+  State<_FluentTextSelectionControlsToolbar> createState() => _FluentTextSelectionControlsToolbarState();
 }
 
-class _FluentTextSelectionControlsToolbarState
-    extends State<_FluentTextSelectionControlsToolbar> {
-  ClipboardStatusNotifier? _clipboardStatus;
+class _FluentTextSelectionControlsToolbarState extends State<_FluentTextSelectionControlsToolbar> {
+  ValueListenable<ClipboardStatus>? _clipboardStatus;
 
   void _onChangedClipboardStatus() {
     setState(() {
@@ -226,7 +218,6 @@ class _FluentTextSelectionControlsToolbarState
     if (widget.handlePaste != null) {
       _clipboardStatus = widget.clipboardStatus;
       _clipboardStatus!.addListener(_onChangedClipboardStatus);
-      _clipboardStatus!.update();
     }
   }
 
@@ -236,13 +227,9 @@ class _FluentTextSelectionControlsToolbarState
     if (oldWidget.clipboardStatus != widget.clipboardStatus) {
       if (_clipboardStatus != null) {
         _clipboardStatus!.removeListener(_onChangedClipboardStatus);
-        _clipboardStatus!.dispose();
       }
       _clipboardStatus = widget.clipboardStatus;
       _clipboardStatus!.addListener(_onChangedClipboardStatus);
-      if (widget.handlePaste != null) {
-        _clipboardStatus!.update();
-      }
     }
   }
 
@@ -251,7 +238,7 @@ class _FluentTextSelectionControlsToolbarState
     super.dispose();
     // When used in an Overlay, this can be disposed after its creator has
     // already disposed _clipboardStatus.
-    if (_clipboardStatus != null && !_clipboardStatus!.disposed) {
+    if (_clipboardStatus != null) {
       _clipboardStatus!.removeListener(_onChangedClipboardStatus);
     }
   }
@@ -315,8 +302,7 @@ class _FluentTextSelectionControlsToolbarState
         widget.handleCopy!,
       );
     }
-    if (widget.handlePaste != null &&
-        _clipboardStatus!.value == ClipboardStatus.pasteable) {
+    if (widget.handlePaste != null && _clipboardStatus!.value == ClipboardStatus.pasteable) {
       addToolbarButton(
         localizations.pasteActionLabel,
         FluentIcons.paste,

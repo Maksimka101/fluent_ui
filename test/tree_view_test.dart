@@ -28,7 +28,6 @@ void main() {
 
     await tester.pumpWidget(wrapApp(child: TreeView(items: items)));
 
-    expect(itemOne.parent, isNotNull);
     expect(itemOne.parent?.selected, null);
   });
 }
